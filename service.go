@@ -4,6 +4,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 type ServiceInfo interface{}
@@ -62,6 +63,7 @@ func (s *StandaloneProcessService) Start(onExit chan interface{}, id interface{}
 	logFile, _ := os.OpenFile(LogFilePath(s.id), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
+	cmd.SysProcAttr = &syscall.SysProcAttr{}
 	setDeathsig(cmd.SysProcAttr)
 	go func() {
 		_ = cmd.Start()

@@ -161,6 +161,7 @@ func RunRouter(ctx context.Context, onExitChannel chan int) (string, *wsrpc.Webs
 	routerCmd := exec.Command(RouterFile, Config.UBot.Args()...)
 	routerCmd.Stdout = routerLogFile
 	routerCmd.Stderr = routerLogFile
+	routerCmd.SysProcAttr = &syscall.SysProcAttr{}
 	setDeathsig(routerCmd.SysProcAttr)
 	err := routerCmd.Start()
 	if err != nil {
