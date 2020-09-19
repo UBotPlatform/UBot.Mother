@@ -171,7 +171,6 @@ func RunRouter(ctx context.Context, onExitChannel chan int) (string, *wsrpc.Webs
 		routerLogFile.Close()
 		internalOnProcessExit <- 0
 	}()
-	managerUrl := GetUBotAddr("ws", "/api/manager")
 	getTokenUrl := GetUBotAddr("http", "/api/manager/get_token")
 	managerToken := ""
 	loginParams := url.Values{}
@@ -219,6 +218,7 @@ retryLoop:
 		ExitCmd(routerCmd)
 		return "", nil, fmt.Errorf("failed to get the manager token: %w", err)
 	}
+	managerUrl := GetUBotAddr("ws", "/api/manager") + "?token=" + managerToken
 	managerConn, _, err := websocket.DefaultDialer.Dial(managerUrl, nil)
 	if err != nil {
 		ExitCmd(routerCmd)
