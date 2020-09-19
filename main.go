@@ -108,7 +108,7 @@ func main() {
 
 	LoadConfig()
 	if Config.UBot.Address == "" {
-		Config.UBot.Address = ":5000"
+		Config.UBot.Address = "localhost:5000"
 	}
 	SaveConfig()
 
