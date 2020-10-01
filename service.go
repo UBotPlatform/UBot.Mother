@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/url"
 	"os"
 	"os/exec"
 	"syscall"
+	"time"
 )
 
 type ServiceInfo interface{}
@@ -66,13 +69,26 @@ func (s *StandaloneProcessService) Start(onExit chan interface{}, id interface{}
 	cmd.SysProcAttr = &syscall.SysProcAttr{}
 	setDeathsig(cmd.SysProcAttr)
 	go func() {
-		_ = cmd.Start()
+		err := cmd.Start()
+		if err != nil {
+			log.Printf("failed to start %s: %v", s.id, err)
+			_, _ = logFile.WriteString(fmt.Sprintf(
+				"%s failed to start %s: %v\n",
+				time.Now().UTC().Format(time.RFC3339),
+				s.id,
+				err))
+			_ = logFile.Close()
+			s.cmd = nil
+			onExit <- id
+			return
+		}
 		s.status = ServiceRunning
 		_ = cmd.Wait()
 		_ = logFile.Close()
 		if s.status == ServiceRunning {
 			s.status = ServiceExited
 		}
+		s.cmd = nil
 		onExit <- id
 	}()
 }
