@@ -66,13 +66,23 @@ func FetchServiceInfo(dir string, prefix string) map[string]ServiceInfo {
 clientLoop:
 	for clientId := range possibles {
 		name := prefix + clientId
+		var expectedFile string
 		for _, ext := range PathExt {
-			if FileExists(filepath.Join(dir, clientId+ubotSuffix+ext)) {
+			expectedFile = filepath.Join(dir, clientId+ubotSuffix+ext)
+			if FileExists(expectedFile) {
 				r[name] = StandaloneProcessServiceInfo{
-					Path: filepath.Join(dir, clientId+ubotSuffix+ext),
+					Path: expectedFile,
 				}
 				continue clientLoop
 			}
+		}
+		expectedFile = filepath.Join(dir, clientId+ubotSuffix+".jar")
+		if FileExists(expectedFile) {
+			r[name] = StandaloneProcessServiceInfo{
+				Path:       "java",
+				LaunchArgs: []string{"-jar", expectedFile},
+			}
+			continue clientLoop
 		}
 		log.Printf("failed to load client %s because the format is not supported", clientId)
 	}
