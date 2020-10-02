@@ -43,11 +43,11 @@ class AccountAddFab extends React.Component {
         });
     }
     finish() {
-        var args = this.state.account_args.match(/[^\r\n]+/g); 
+        var args = this.state.account_args.match(/[^\r\n]+/g);
         fetch(motherBaseURL + "/api/mother/accounts", {
             body: JSON.stringify([
                 {
-                    "type": this.state.account_type, 
+                    "type": this.state.account_type,
                     "args": args
                 }
             ]),
@@ -79,6 +79,8 @@ class AccountAddFab extends React.Component {
                             id="account_type"
                             label="Type"
                             value={this.state.account_type}
+                            variant="outlined"
+                            margin="dense"
                             onChange={(e) => this.setState({ account_type: (e.target as HTMLInputElement).value })}
                         >
                             {this.state.account_providers.map((x) => (
@@ -91,8 +93,11 @@ class AccountAddFab extends React.Component {
                             multiline
                             rows={4}
                             id="account_args"
-                            label="Args (one per line)"
+                            label="Args"
+                            placeholder={"One by line, usually token or username (first line) & password (second line)"}
                             value={this.state.account_args}
+                            variant="outlined"
+                            margin="dense"
                             onChange={(e) => this.setState({ account_args: (e.target as HTMLInputElement).value })}
                         />
                     </DialogContent>
