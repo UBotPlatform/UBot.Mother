@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ReplayIcon from '@material-ui/icons/Replay';
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
+import Alert from '@material-ui/lab/Alert'
 import ClientList from './ClientList';
 import AccountAddFab from './AccountAddFab';
 import { motherBaseURL } from './buildConfig';
@@ -77,6 +78,9 @@ export default function App() {
                     <Tab label="About" {...a11yProps(0)} />
                 </Tabs>
             </AppBar>
+            <Alert icon={false} severity="info">
+                {"We stand against racial injustice and gender inequality that denies equal rights and opportunities."}
+            </Alert>
             <TabPanel value={value} index={0}>
                 <Accordion defaultExpanded variant="outlined" TransitionProps={{ unmountOnExit: true }}>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
