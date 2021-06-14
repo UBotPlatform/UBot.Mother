@@ -1,6 +1,6 @@
 module github.com/UBotPlatform/UBot.Mother
 
-go 1.14
+go 1.16
 
 require (
 	github.com/1354092549/wsrpc v0.3.2
