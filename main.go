@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -46,7 +46,7 @@ var OnServiceExit = make(chan interface{}, 5)
 
 func FetchServiceInfo(dir string, prefix string) map[string]ServiceInfo {
 	r := make(map[string]ServiceInfo)
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	if err != nil {
 		return r
 	}
@@ -217,7 +217,7 @@ retryLoop:
 				continue
 			}
 			var tokenBin []byte
-			tokenBin, err = ioutil.ReadAll(resp.Body)
+			tokenBin, err = io.ReadAll(resp.Body)
 			if err != nil {
 				continue
 			}
