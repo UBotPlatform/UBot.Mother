@@ -92,7 +92,7 @@ clientLoop:
 func main() {
 	var cancelService context.CancelFunc
 	ServiceRootContext, cancelService = context.WithCancel(context.Background())
-	cancelSignal := make(chan os.Signal)
+	cancelSignal := make(chan os.Signal, 1)
 	signal.Notify(cancelSignal, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-cancelSignal
