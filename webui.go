@@ -40,7 +40,7 @@ func ServeWebUI() {
 func getServices(writer http.ResponseWriter, request *http.Request) {
 	var r []*ServiceInfoFromMother
 	for pair := Services.Oldest(); pair != nil; pair = pair.Next() {
-		s := pair.Value.(*ServiceLaunchInfo)
+		s := pair.Value
 		r = append(r, buildServiceInfoResp(s))
 	}
 	webuiResponse(request, writer, r)
@@ -64,7 +64,7 @@ func buildServiceInfoResp(s *ServiceLaunchInfo) *ServiceInfoFromMother {
 func buildServiceInfoRespByID(id string) *ServiceInfoFromMother {
 	s, ok := Services.Get(id)
 	if ok {
-		return buildServiceInfoResp(s.(*ServiceLaunchInfo))
+		return buildServiceInfoResp(s)
 	}
 	return nil
 }
@@ -114,7 +114,7 @@ func getAccounts(writer http.ResponseWriter, request *http.Request) {
 		}
 	}
 	for pair := Services.Oldest(); pair != nil; pair = pair.Next() {
-		s := pair.Value.(*ServiceLaunchInfo)
+		s := pair.Value
 		sid := s.Service.ID()
 		if strings.HasPrefix(sid, "Account#") {
 			if _, known := knowns[sid]; !known {
@@ -152,7 +152,7 @@ func getApps(writer http.ResponseWriter, request *http.Request) {
 		}
 	}
 	for pair := Services.Oldest(); pair != nil; pair = pair.Next() {
-		s := pair.Value.(*ServiceLaunchInfo)
+		s := pair.Value
 		sid := s.Service.ID()
 		if strings.HasPrefix(sid, "App#") {
 			if _, known := knowns[sid]; !known {
@@ -198,9 +198,8 @@ func putServices(writer http.ResponseWriter, request *http.Request) {
 	for _, item := range data {
 		success := false
 		if id, ok := item["id"].(string); ok {
-			if rS, ok := Services.Get(id); ok {
+			if s, ok := Services.Get(id); ok {
 				success = true
-				s := rS.(*ServiceLaunchInfo)
 				if status, ok := item["status"].(float64); ok {
 					switch int32(status) {
 					case ServiceStarting:

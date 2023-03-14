@@ -1,22 +1,21 @@
 import React from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ReplayIcon from '@material-ui/icons/Replay';
-import Container from '@material-ui/core/Container';
-import Fab from '@material-ui/core/Fab';
-import Alert from '@material-ui/lab/Alert'
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ReplayIcon from '@mui/icons-material/Replay';
+import CssBaseline from '@mui/material/CssBaseline';
+import Fab from '@mui/material/Fab';
+import Alert from '@mui/material/Alert'
 import ClientList from './ClientList';
 import AccountAddFab from './AccountAddFab';
 import { motherBaseURL } from './buildConfig';
-import { Link } from '@material-ui/core';
+import { Link } from '@mui/material';
 interface TabPanelProps {
     children?: React.ReactNode;
     index: any;
@@ -49,13 +48,6 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-    },
-}));
-
 function reloadApps() {
     fetch(motherBaseURL + "/api/mother/apps/reload", {
         method: 'POST'
@@ -63,7 +55,6 @@ function reloadApps() {
 }
 
 export default function App() {
-    const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -71,13 +62,14 @@ export default function App() {
     };
 
     return (
-        <Container className={classes.root}>
-            <AppBar position="static">
+        <React.Fragment>
+            <CssBaseline />
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange}>
                     <Tab label="Basic" {...a11yProps(0)} />
                     <Tab label="About" {...a11yProps(0)} />
                 </Tabs>
-            </AppBar>
+            </Box>
             <Alert icon={false} severity="info">
                 {"We stand against racial injustice and gender inequality that denies equal rights and opportunities."}
             </Alert>
@@ -87,8 +79,10 @@ export default function App() {
                         <Typography>Accounts</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <ClientList endpoint="/api/mother/accounts" />
-                        <AccountAddFab />
+                        <Box display="flex">
+                            <ClientList endpoint="/api/mother/accounts" />
+                            <AccountAddFab />
+                        </Box>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion defaultExpanded variant="outlined" TransitionProps={{ unmountOnExit: true }}>
@@ -96,10 +90,12 @@ export default function App() {
                         <Typography>Apps</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <ClientList endpoint="/api/mother/apps" />
-                        <Fab color="primary" aria-label="reload" onClick={reloadApps}>
-                            <ReplayIcon />
-                        </Fab>
+                        <Box display="flex">
+                            <ClientList endpoint="/api/mother/apps" />
+                            <Fab color="primary" aria-label="reload" onClick={reloadApps}>
+                                <ReplayIcon />
+                            </Fab>
+                        </Box>
                     </AccordionDetails>
                 </Accordion>
             </TabPanel>
@@ -118,6 +114,6 @@ export default function App() {
                     {"Chinese (Simplified): "}<Link href="https://www.kancloud.cn/qiqi1354092549/ubot/content">{"Read here"}</Link>
                 </Typography>
             </TabPanel>
-        </Container>
+        </React.Fragment>
     );
 }

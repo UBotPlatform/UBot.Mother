@@ -19,9 +19,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/1354092549/wsrpc"
+	"github.com/ArcticLampyrid/wsrpc"
 	"github.com/gorilla/websocket"
-	orderedmap "github.com/wk8/go-ordered-map"
+	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
 type ServiceLaunchInfo struct {
@@ -35,7 +35,7 @@ func (s *ServiceLaunchInfo) Start() {
 	s.Service.Start(OnServiceExit, s)
 }
 
-var Services = orderedmap.New()
+var Services = orderedmap.New[string, *ServiceLaunchInfo]()
 var AccountProviders map[string]ServiceInfo
 var ServiceRootContext context.Context
 var MotherID = NewToken()
@@ -264,7 +264,7 @@ func DaemonThread(ctx context.Context) {
 		log.Fatalf("failed to run router: %v", err)
 	}
 	for pair := Services.Oldest(); pair != nil; pair = pair.Next() {
-		s := pair.Value.(*ServiceLaunchInfo)
+		s := pair.Value
 		fmt.Printf("Launching %s...\n", s.Service.ID())
 		s.Start()
 	}
@@ -281,7 +281,7 @@ func DaemonThread(ctx context.Context) {
 			log.Printf("Router is down, retrying in 3 seconds")
 			time.Sleep(3 * time.Second)
 			for pair := Services.Oldest(); pair != nil; pair = pair.Next() {
-				s := pair.Value.(*ServiceLaunchInfo)
+				s := pair.Value
 				s.Service.Exit()
 			}
 			ManagerToken, ManagerRPCConn, err = RunRouter(ctx, onRouterExit)
